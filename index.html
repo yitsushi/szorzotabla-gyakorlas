@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <meta charset="utf-8"> 
+    <title>Szorzótábla Gyakorlás</title>
+    <style>
+      #levelselector {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+      }
+
+      #score {
+        text-align: center;
+        font-size: 3em;
+        font-weight: bold;
+      }
+      #question {
+        margin-top: 2em;
+        text-align: center;
+        font-size: 3em;
+        font-weight: bold;
+      }
+      .answerblock {
+        text-align:center;
+      }
+      .answerblock input[type='number'] {
+        font-size: 2em;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 8em;
+        margin-bottom: 1em;
+      }
+      .answerblock input[type='button'] {
+        font-size: 2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <select id='levelselector' onChange='changeLevel(this)'>
+        <option value='1' selected="selected">1-es szorzótábla</option>
+        <option value='2'>2-es szorzótábla</option>
+        <option value='3'>3-as szorzótábla</option>
+        <option value='4'>4-es szorzótábla</option>
+        <option value='5'>5-ös szorzótábla</option>
+        <option value='6'>6-os szorzótábla</option>
+        <option value='7'>7-es szorzótábla</option>
+        <option value='8'>8-as szorzótábla</option>
+        <option value='9'>9-es szorzótábla</option>
+      </select>
+    <div>
+    <div id='score'>0</div>
+    <div id='question'></div>
+    <div class='answerblock'>
+      <input type='number' id='answer' />
+      <input type='button' value='Küldés' id='send' />
+    </div>
+    <script>
+      var level = 1;
+      var question = 1;
+      var score = 0;
+
+      function changeLevel(obj) {
+        level = parseInt(obj.value, 10);
+        if (level < 1) {
+          level = 1;
+        }
+        if (level > 9) {
+          level = 9;
+        }
+        score = 0;
+        updateScore();
+        newQuestion();
+      };
+
+      function answer() {
+        value = parseInt(document.querySelector('#answer').value, 10);
+        if (level * question == value) {
+          score++;
+        } else {
+          alert('Nem :(');
+          score = 0;
+        }
+        document.querySelector('#answer').value = ''
+        updateScore();
+        newQuestion();
+      }
+
+      function updateScore() {
+        document.querySelector('#score').innerHTML = '' + score + ' pont';
+      }
+
+      function newQuestion() {
+        var value = Math.floor((Math.random() * 10) + 1);
+        question = value;
+        document.querySelector('#question').innerHTML = '' + level + ' x ' + question + ' = ?';
+      }
+
+      document.querySelector('#send').addEventListener('click', answer);
+      //document.querySelector('#levelselector').addEventListener('change', changeLevel);
+
+      updateScore();
+      newQuestion();
+    </script>
+  </body>
+</html>
