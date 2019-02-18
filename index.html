@@ -1,6 +1,6 @@
 <html>
   <head>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <title>Szorzótábla Gyakorlás</title>
     <style>
       #levelselector {
@@ -37,8 +37,13 @@
     </style>
   </head>
   <body>
+    <!--
+      License: Do whatever you want           | http://www.wtfpl.net/
+      Author:  Balazs Nadasdi                 | https://cheppers.com/
+      Purpose: Practice tool for my daughter
+    -->
     <div>
-      <select id='levelselector' onChange='changeLevel(this)'>
+      <select id='levelselector' onChange='changeLevel(this)' autocomplete="off">
         <option value='1' selected="selected">1-es szorzótábla</option>
         <option value='2'>2-es szorzótábla</option>
         <option value='3'>3-as szorzótábla</option>
@@ -60,6 +65,7 @@
       var level = 1;
       var question = 1;
       var score = 0;
+      var questionHistory = [];
 
       function changeLevel(obj) {
         level = parseInt(obj.value, 10);
@@ -72,6 +78,7 @@
         score = 0;
         updateScore();
         newQuestion();
+        questionHistory = [];
       };
 
       function answer() {
@@ -91,14 +98,41 @@
         document.querySelector('#score').innerHTML = '' + score + ' pont';
       }
 
+      // Source: https://stackoverflow.com/a/6274381
+      function shuffle(a) {
+        var j, x, i;
+        for (i = a.length - 1; i > 0; i--) {
+          j = Math.floor(Math.random() * (i + 1));
+          x = a[i];
+          a[i] = a[j];
+          a[j] = x;
+        }
+        return a;
+      }
+
+      var available = [1,2,3,4,5,6,7,8,9];
       function newQuestion() {
-        var value = Math.floor((Math.random() * 10) + 1);
-        question = value;
+        var queue = [];
+        available.forEach(function(v) {
+          num = questionHistory.filter(function(i) { return i == v }).length;
+          chance = (2 - num);
+
+          for (var i = 0; i < chance; i++) {
+            queue.push(v);
+          }
+        });
+        if (queue.length < 1) {
+          document.querySelector('#question').innerHTML = 'Győzelem!';
+          return;
+        }
+        console.log(queue);
+        shuffle(queue);
+        question = queue.pop();
+        questionHistory.push(question);
         document.querySelector('#question').innerHTML = '' + level + ' x ' + question + ' = ?';
       }
 
       document.querySelector('#send').addEventListener('click', answer);
-      //document.querySelector('#levelselector').addEventListener('change', changeLevel);
 
       updateScore();
       newQuestion();
